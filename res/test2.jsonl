@@ -1,0 +1,36 @@
+{"Time":"2024-05-27T19:58:10.444+07:00","Action":"start","Package":"github.com/petrabarus/go-qase-testing-reporter"}
+{"Time":"2024-05-27T19:58:10.573373+07:00","Action":"run","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId"}
+{"Time":"2024-05-27T19:58:10.573449+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId","Output":"=== RUN   TestParseQaseId\n"}
+{"Time":"2024-05-27T19:58:10.573495+07:00","Action":"run","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/valid_qase_id"}
+{"Time":"2024-05-27T19:58:10.573502+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/valid_qase_id","Output":"=== RUN   TestParseQaseId/valid_qase_id\n"}
+{"Time":"2024-05-27T19:58:10.573514+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/valid_qase_id","Output":"--- PASS: TestParseQaseId/valid_qase_id (0.00s)\n"}
+{"Time":"2024-05-27T19:58:10.573519+07:00","Action":"pass","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/valid_qase_id","Elapsed":0}
+{"Time":"2024-05-27T19:58:10.57353+07:00","Action":"run","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/invalid_qase_id"}
+{"Time":"2024-05-27T19:58:10.573534+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/invalid_qase_id","Output":"=== RUN   TestParseQaseId/invalid_qase_id\n"}
+{"Time":"2024-05-27T19:58:10.573538+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/invalid_qase_id","Output":"--- PASS: TestParseQaseId/invalid_qase_id (0.00s)\n"}
+{"Time":"2024-05-27T19:58:10.573543+07:00","Action":"pass","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/invalid_qase_id","Elapsed":0}
+{"Time":"2024-05-27T19:58:10.573548+07:00","Action":"run","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/empty_input"}
+{"Time":"2024-05-27T19:58:10.573551+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/empty_input","Output":"=== RUN   TestParseQaseId/empty_input\n"}
+{"Time":"2024-05-27T19:58:10.573562+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/empty_input","Output":"--- PASS: TestParseQaseId/empty_input (0.00s)\n"}
+{"Time":"2024-05-27T19:58:10.573566+07:00","Action":"pass","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/empty_input","Elapsed":0}
+{"Time":"2024-05-27T19:58:10.57357+07:00","Action":"run","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/no_qase_id"}
+{"Time":"2024-05-27T19:58:10.573573+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/no_qase_id","Output":"=== RUN   TestParseQaseId/no_qase_id\n"}
+{"Time":"2024-05-27T19:58:10.573577+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/no_qase_id","Output":"--- PASS: TestParseQaseId/no_qase_id (0.00s)\n"}
+{"Time":"2024-05-27T19:58:10.573581+07:00","Action":"pass","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/no_qase_id","Elapsed":0}
+{"Time":"2024-05-27T19:58:10.573585+07:00","Action":"run","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/multiple_qase_id"}
+{"Time":"2024-05-27T19:58:10.573588+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/multiple_qase_id","Output":"=== RUN   TestParseQaseId/multiple_qase_id\n"}
+{"Time":"2024-05-27T19:58:10.573597+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/multiple_qase_id","Output":"--- PASS: TestParseQaseId/multiple_qase_id (0.00s)\n"}
+{"Time":"2024-05-27T19:58:10.573604+07:00","Action":"pass","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/multiple_qase_id","Elapsed":0}
+{"Time":"2024-05-27T19:58:10.573629+07:00","Action":"run","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/QASE-1"}
+{"Time":"2024-05-27T19:58:10.573632+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/QASE-1","Output":"=== RUN   TestParseQaseId/QASE-1_multiple_qase_id\n"}
+{"Time":"2024-05-27T19:58:10.573635+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/QASE-1","Output":"--- PASS: TestParseQaseId/QASE-1_multiple_qase_id (0.00s)\n"}
+{"Time":"2024-05-27T19:58:10.573638+07:00","Action":"pass","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/QASE-1","Elapsed":0}
+{"Time":"2024-05-27T19:58:10.57364+07:00","Action":"run","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/QASE-1/QASE-2"}
+{"Time":"2024-05-27T19:58:10.573646+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/QASE-1/QASE-2","Output":"=== RUN   TestParseQaseId/QASE-1/QASE-2_multiple_qase_id\n"}
+{"Time":"2024-05-27T19:58:10.573649+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/QASE-1/QASE-2","Output":"--- PASS: TestParseQaseId/QASE-1/QASE-2_multiple_qase_id (0.00s)\n"}
+{"Time":"2024-05-27T19:58:10.573659+07:00","Action":"pass","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId/QASE-1/QASE-2_multiple_qase_id","Elapsed":0}
+{"Time":"2024-05-27T19:58:10.573662+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId","Output":"--- PASS: TestParseQaseId (0.00s)\n"}
+{"Time":"2024-05-27T19:58:10.573667+07:00","Action":"pass","Package":"github.com/petrabarus/go-qase-testing-reporter","Test":"TestParseQaseId","Elapsed":0}
+{"Time":"2024-05-27T19:58:10.57367+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Output":"PASS\n"}
+{"Time":"2024-05-27T19:58:10.573829+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Output":"ok  \tgithub.com/petrabarus/go-qase-testing-reporter\t0.130s\n"}
+{"Time":"2024-05-27T19:58:10.573845+07:00","Action":"pass","Package":"github.com/petrabarus/go-qase-testing-reporter","Elapsed":0.13}

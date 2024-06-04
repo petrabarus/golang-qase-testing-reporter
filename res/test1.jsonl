@@ -1,0 +1,5 @@
+{"Time":"2024-05-27T19:33:56.83942+07:00","Action":"start","Package":"github.com/petrabarus/go-qase-testing-reporter"}
+{"Time":"2024-05-27T19:33:56.955294+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Output":"testing: warning: no tests to run\n"}
+{"Time":"2024-05-27T19:33:56.955616+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Output":"PASS\n"}
+{"Time":"2024-05-27T19:33:56.955646+07:00","Action":"output","Package":"github.com/petrabarus/go-qase-testing-reporter","Output":"ok  \tgithub.com/petrabarus/go-qase-testing-reporter\t0.116s\n"}
+{"Time":"2024-05-27T19:33:56.955656+07:00","Action":"pass","Package":"github.com/petrabarus/go-qase-testing-reporter","Elapsed":0.116}
