@@ -12,14 +12,13 @@ go install github.com/petrabarus/golang-qase-testing-reporter
 
 ## Usage
 
-
 ### Configuration
 
 Before running the command you need to pass the configuration in the environment variable. We use the same environment variable as the Qase official libraries. Below is the list of the environment variables that you need to pass:
 
-- `QASE_PROJECT` The project code in Qase.
-- `QASE_API_TOKEN` The API token in Qase.
-- `QASE_RUN` The name of the run in Qase.
+- `QASE_TESTOPS_PROJECT` The project code in Qase.
+- `QASE_TESTOPS_API_TOKEN` The API token in Qase.
+- `QASE_TESTOPS_RUN_TITLE` The name of the run in Qase.
 
 ### Run the command
 
@@ -31,6 +30,15 @@ golang-qase-testing-reporter \
     --project <Qase project code> \
     --run <Qase run ID> \
     <path/to/report.jsonl>
+```
+
+You can also use the Qase's official environment variables.
+
+```
+QASE_TESTOPS_API_TOKEN=XXX \
+    QASE_TESTOPS_PROJECT=XXX \
+    QASE_TESTOPS_RUN_TITLE="Test Run $(date +%Y-%m-%d %H:%M:%S)" \
+    golang-qase-testing-reporter report.jsonl
 ```
 
 The command above will read JSON Lines file `path/to/report.jsonl` and send the report to Qase.
