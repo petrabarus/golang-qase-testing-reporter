@@ -7,7 +7,7 @@ This is a command line to read testing report file in JSON Lines format and send
 To install the command run the following command:
 
 ```bash
-go install github.com/petrabarus/golang-qase-testing-reporter
+go install github.com/petrabarus/go-qase-testing-reporter
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ Before running the command you need to pass the configuration in the environment
 Once you have the configuration, you can run the command by passing the path to the JSON report file. You can also use flags as alternatives of environment variables. Below is an example of the command:
 
 ```bash
-golang-qase-testing-reporter \
+go-qase-testing-reporter \
     --token <Qase API token> \ 
     --project <Qase project code> \
     --run <Qase run ID> \
@@ -38,7 +38,7 @@ You can also use the Qase's official environment variables.
 QASE_TESTOPS_API_TOKEN=XXX \
     QASE_TESTOPS_PROJECT=XXX \
     QASE_TESTOPS_RUN_TITLE="Test Run $(date +%Y-%m-%d %H:%M:%S)" \
-    golang-qase-testing-reporter report.jsonl
+    go-qase-testing-reporter report.jsonl
 ```
 
 The command above will read JSON Lines file `path/to/report.jsonl` and send the report to Qase.
