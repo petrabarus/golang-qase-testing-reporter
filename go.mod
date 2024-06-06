@@ -1,6 +1,6 @@
 module github.com/petrabarus/go-qase-testing-reporter
 
-go 1.20
+go 1.19
 
 require (
 	github.com/spf13/cobra v1.8.0
