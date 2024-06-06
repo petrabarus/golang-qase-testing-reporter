@@ -26,9 +26,9 @@ Once you have the configuration, you can run the command by passing the path to 
 
 ```bash
 go-qase-testing-reporter \
-    --token <Qase API token> \ 
+    --api-token <Qase API token> \ 
     --project <Qase project code> \
-    --run <Qase run ID> \
+    --run-title <Qase run ID> \
     <path/to/report.jsonl>
 ```
 

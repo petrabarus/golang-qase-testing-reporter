@@ -20,11 +20,10 @@ import (
 
 type Config struct {
 	Filename     string
-	QaseApiToken string `mapstructure:"token"`
+	QaseApiToken string `mapstructure:"api_token"`
 	QaseProject  string `mapstructure:"project"`
-	QaseRun      string `mapstructure:"run"`
+	QaseRunTitle string `mapstructure:"run_title"`
 }
-
 type ReportJsonLine struct {
 	Time    string  `json:"time"`
 	Test    string  `json:"test"`   // The name of the test
@@ -72,15 +71,17 @@ func init() {
 	cobra.OnInitialize()
 
 	cmd.Flags().StringP("project", "p", "", "Qase project name")
-	cmd.Flags().StringP("token", "t", "", "Qase API token")
-	cmd.Flags().StringP("run", "r", "", "Qase run title")
+	cmd.Flags().StringP("api-token", "t", "", "Qase API token")
+	cmd.Flags().StringP("run-title", "r", "", "Qase run title")
 
 	viper.BindPFlag("project", cmd.Flags().Lookup("project"))
-	viper.BindPFlag("token", cmd.Flags().Lookup("token"))
-	viper.BindPFlag("run", cmd.Flags().Lookup("run"))
-	viper.BindEnv("project", "QASE_PROJECT")
-	viper.BindEnv("token", "QASE_API_TOKEN")
-	viper.BindEnv("run", "QASE_RUN")
+	viper.BindPFlag("api_token", cmd.Flags().Lookup("api-token"))
+	viper.BindPFlag("run_title", cmd.Flags().Lookup("run-title"))
+
+	// Adopts the official Qase environment variables
+	viper.BindEnv("project", "QASE_TESTOPS_PROJECT")
+	viper.BindEnv("api_token", "QASE_TESTOPS_API_TOKEN")
+	viper.BindEnv("run_title", "QASE_TESTOPS_RUN_TITLE")
 }
 
 func main() {
@@ -144,7 +145,7 @@ func createNewRun(results []ReportResult) (runId int32, err error) {
 	}
 
 	qaseResp, httpResp, err := qaseClient.RunsApi.CreateRun(ctx, qase.RunCreate{
-		Title: config.QaseRun,
+		Title: config.QaseRunTitle,
 		Cases: caseIds,
 	}, config.QaseProject)
 	if err != nil {
