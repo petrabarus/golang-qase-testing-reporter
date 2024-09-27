@@ -1,4 +1,4 @@
-# golang-qase-testing-reporter
+# Go Qase Testing Reporter
 
 This is a command line to read testing report file in JSON Lines format and send reporting to Qase. Since Go built-in testing library does not provide any listener, this tool will be run after the test is finished and generated the JSON Lines report file.
 

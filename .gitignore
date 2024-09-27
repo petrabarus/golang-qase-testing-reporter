@@ -25,3 +25,6 @@ go.work
 
 # IDE
 .vscode
+
+# Test results
+test-results.json

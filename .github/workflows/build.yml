@@ -6,6 +6,9 @@ on:
       - main
     tags:
       - v*
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -22,11 +25,23 @@ jobs:
         with:
           go-version: "1.21"
 
+      - name: Test
+        run: |
+          go test -v -json -coverprofile coverage.out ./... | tee test-results.json
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
+        # We don't need to run GoReleaser on PRs
+        if: github.event_name != 'pull_request'
         with:
           distribution: goreleaser
           version: '~> v2'
           args: release --clean --snapshot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
