@@ -13,45 +13,45 @@ func TestParseQaseId(t *testing.T) {
 		expected int
 	}{
 		{
-			name:     "valid qase id",
+			name:     "QASE-1 Valid Qase ID",
 			input:    "QASE-123",
 			expected: 123,
 		},
 		{
-			name:     "invalid qase id",
+			name:     "QASE-3 Invalid Qase ID",
 			input:    "QASE-abc",
 			expected: 0,
 		},
 		{
-			name:     "empty input",
+			name:     "QASE-3 Empty input",
 			input:    "",
 			expected: 0,
 		},
 		{
-			name:     "no qase id",
+			name:     "QASE-4 No Qase ID",
 			input:    "QASE-",
 			expected: 0,
 		},
 		{
-			name:     "multiple qase id",
+			name:     "QASE-5 Will choose the last Qase ID on multiple Qase ID - 1",
 			input:    "QASE-123/Halohalo_QASE-456",
 			expected: 456,
 		},
 		{
-			name:     "QASE-123 multiple qase id",
+			name:     "QASE-6 Will choose the last Qase ID on multiple Qase ID - 2",
 			input:    "QASE-123/Halohalo_QASE-456",
 			expected: 456,
 		},
 		{
-			name:     "QASE-123/QASE-456 multiple qase id",
-			input:    "QASE-123/Halohalo_QASE-456",
-			expected: 456,
+			name:     "QASE-7 Will choose the last Qase ID on multiple Qase ID - 3",
+			input:    "QASE-123/Halohalo_QASE-789",
+			expected: 789,
 		},
 	}
 
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
-			actual, err := parseQaseId(tc.input)
+			actual, err := ParseQaseId(tc.input)
 			require.Nil(t, err)
 			require.Equal(t, tc.expected, actual)
 		})

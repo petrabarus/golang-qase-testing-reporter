@@ -24,6 +24,7 @@ type Config struct {
 	QaseProject  string `mapstructure:"project"`
 	QaseRunTitle string `mapstructure:"run_title"`
 }
+
 type ReportJsonLine struct {
 	Time    string  `json:"time"`
 	Test    string  `json:"test"`   // The name of the test
@@ -276,7 +277,7 @@ func processLine(line string) (result ReportResult, err error) {
 		return
 	}
 
-	qaseId, err := parseQaseId(content.Test)
+	qaseId, err := ParseQaseId(content.Test)
 	if err != nil {
 		err = errors.Join(fmt.Errorf("failed to parse Qase ID in line: %v", line), err)
 		return
@@ -321,7 +322,7 @@ func processLine(line string) (result ReportResult, err error) {
 	return
 }
 
-func parseQaseId(test string) (int, error) {
+func ParseQaseId(test string) (int, error) {
 	re := regexp.MustCompile(`QASE-(\d+)`)
 	matches := re.FindAllStringSubmatch(test, -1)
 	if len(matches) == 0 {
