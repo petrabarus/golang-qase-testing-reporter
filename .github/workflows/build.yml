@@ -27,7 +27,15 @@ jobs:
 
       - name: Test
         run: |
-          go test -v -json -coverprofile coverage.out ./... | tee test-results.json
+          go test -v -json -coverprofile coverage.out ./... | tee test-results.jsonl
+
+      - name: Run Qase Reporter
+        run: |
+          go run . \
+            --api-token ${{ secrets.QASE_API_TOKEN }} \
+            --project ${{ secrets.QASE_PROJECT }} \
+            --run-title "Pipeline run $(date +%Y%m%d%H%M%S)" \
+            test-results.jsonl
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
