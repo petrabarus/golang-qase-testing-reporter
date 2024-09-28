@@ -1,3 +1,8 @@
+// go-qase-testing-reporter is a tool to report test results to Qase.
+// Since Go testing does not have a built-in testing event listener,
+// we need to parse the test output and report the results to Qase.
+// To run this file locally, execute:
+// go run . --api-token <qase-api-token> --project <qase-project-name> --run-title <qase-run-title> <path/to/test-results.jsonl>
 package main
 
 import (

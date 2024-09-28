@@ -18,7 +18,7 @@ func TestParseQaseId(t *testing.T) {
 			expected: 123,
 		},
 		{
-			name:     "QASE-3 Invalid Qase ID",
+			name:     "QASE-2 Invalid Qase ID",
 			input:    "QASE-abc",
 			expected: 0,
 		},

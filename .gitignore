@@ -27,4 +27,4 @@ go.work
 .vscode
 
 # Test results
-test-results.json
+test-results.jsonl
