@@ -2,7 +2,7 @@
 
 This is a command line to read testing report file in JSON Lines format and send reporting to Qase. Since Go built-in testing library does not provide any listener, this tool will be run after the test is finished and generated the JSON Lines report file.
 
-## Installation
+## 1. Installation
 
 To install the command run the following command:
 
@@ -10,9 +10,9 @@ To install the command run the following command:
 go install github.com/petrabarus/go-qase-testing-reporter
 ```
 
-## Usage
+## 2. Usage
 
-### Configuration
+### 2.1. Configuration
 
 Before running the command you need to pass the configuration in the environment variable. We use the same environment variable as the Qase official libraries. Below is the list of the environment variables that you need to pass:
 
@@ -20,7 +20,7 @@ Before running the command you need to pass the configuration in the environment
 - `QASE_TESTOPS_API_TOKEN` The API token in Qase.
 - `QASE_TESTOPS_RUN_TITLE` The name of the run in Qase.
 
-### Run the command
+### 2.2. Run the command
 
 Once you have the configuration, you can run the command by passing the path to the JSON report file. You can also use flags as alternatives of environment variables. Below is an example of the command:
 
@@ -42,3 +42,17 @@ QASE_TESTOPS_API_TOKEN=XXX \
 ```
 
 The command above will read JSON Lines file `path/to/report.jsonl` and send the report to Qase.
+
+### 2.3. Output
+
+The command will output the following information:
+
+1. The ID of the run in Qase.
+
+The format will be in JSON like below:
+
+```json
+{
+    "run_id": "1234567890"
+}
+```
