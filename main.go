@@ -23,6 +23,12 @@ import (
 	qase "go.qase.io/client"
 )
 
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
+
 type Config struct {
 	Filename     string
 	QaseApiToken string `mapstructure:"api_token"`
@@ -47,6 +53,21 @@ type ReportResult struct {
 	TimeMs     int64
 }
 
+type ReportResultOutput struct {
+	TestCaseId int64
+	Status     string
+}
+
+type ReportOutput struct {
+	RunId    int32                 `json:"run_id"`
+	TestRuns []ReportOutputTestRun `json:"test_runs"`
+}
+
+type ReportOutputTestRun struct {
+	TestCaseId int64  `json:"test_case_id"`
+	Status     string `json:"status"`
+}
+
 var (
 	ctx context.Context
 
@@ -59,7 +80,7 @@ var (
 Since Go testing does not have a built-in testing event listener, 
 we need to parse the test output and report the results to Qase.
 `,
-		Args:             cobra.ExactArgs(1),
+		Args:             cobra.MaximumNArgs(1),
 		ArgAliases:       []string{"filename"},
 		PersistentPreRun: preRun,
 		Run:              RunCommand,
@@ -79,6 +100,9 @@ func init() {
 	cmd.Flags().StringP("project", "p", "", "Qase project name")
 	cmd.Flags().StringP("api-token", "t", "", "Qase API token")
 	cmd.Flags().StringP("run-title", "r", "", "Qase run title")
+
+	// add --version flag
+	cmd.Flags().BoolP("version", "v", false, "Print version")
 
 	viper.BindPFlag("project", cmd.Flags().Lookup("project"))
 	viper.BindPFlag("api_token", cmd.Flags().Lookup("api-token"))
@@ -104,9 +128,11 @@ func preRun(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatalf("Unable to read Viper options into configuration: %v", err)
 	}
-	config.Filename = args[0]
+	if len(args) > 0 {
+		config.Filename = args[0]
+	}
 
-	log.Printf("Config: %+v", config)
+	//log.Printf("Config: %+v", config)
 	ctx = context.Background()
 
 	initQaseClient()
@@ -119,8 +145,20 @@ func initQaseClient() {
 }
 
 func RunCommand(cmd *cobra.Command, args []string) {
+	if printVersion(cmd) {
+		return
+	}
+
+	if config.Filename == "" {
+		fmt.Fprintln(os.Stderr, "Error: filename is required")
+		// print usage
+		cmd.Usage()
+		return
+	}
+
 	var err error
-	fmt.Println("Running go-qase-testing-reporter")
+	var output ReportOutput
+	//fmt.Println("Running go-qase-testing-reporter")
 	results, err := processFile(config.Filename)
 	if err != nil {
 		log.Fatalf("Failed to process file: %v", err)
@@ -132,7 +170,7 @@ func RunCommand(cmd *cobra.Command, args []string) {
 		log.Fatalf("Failed to create test run: %v", err)
 	}
 
-	err = createTestRunResults(id, results)
+	testRunResultOutputs, err := createTestRunResults(id, results)
 	if err != nil {
 		log.Fatalf("Failed to create test run result: %v", err)
 	}
@@ -141,6 +179,18 @@ func RunCommand(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatalf("Failed to complete test run: %v", err)
 	}
+
+	output = createOutput(id, testRunResultOutputs)
+	printOutput(output)
+}
+
+func printVersion(cmd *cobra.Command) (shouldExit bool) {
+	shouldPrintVersion, _ := cmd.Flags().GetBool("version")
+	if shouldPrintVersion {
+		fmt.Printf("go-qase-testing-reporter %s-%s-%s\n", version, commit, date)
+		return true
+	}
+	return false
 }
 
 func createNewRun(results []ReportResult) (runId int32, err error) {
@@ -168,7 +218,8 @@ func createNewRun(results []ReportResult) (runId int32, err error) {
 	return
 }
 
-func createTestRunResults(runId int32, results []ReportResult) (err error) {
+func createTestRunResults(runId int32, results []ReportResult) (testRunResultOutputs []ReportResultOutput, err error) {
+	testRunResultOutputs = make([]ReportResultOutput, 0)
 	qaseResults := make([]qase.ResultCreate, 0)
 	for _, result := range results {
 		qaseResult := qase.ResultCreate{
@@ -182,6 +233,10 @@ func createTestRunResults(runId int32, results []ReportResult) (err error) {
 			qaseResult.Comment = fmt.Sprintf("Package: %v", result.Package)
 		}
 		qaseResults = append(qaseResults, qaseResult)
+		testRunResultOutputs = append(testRunResultOutputs, ReportResultOutput{
+			TestCaseId: int64(result.TestCaseId),
+			Status:     result.Status,
+		})
 	}
 
 	qaseResp, httpResp, err := qaseClient.ResultsApi.CreateResultBulk(ctx, qase.ResultCreateBulk{
@@ -339,4 +394,29 @@ func ParseQaseId(test string) (int, error) {
 		return 0, errors.New("failed to parse Qase ID")
 	}
 	return qaseId, nil
+}
+
+func createOutput(runId int32, testRunResultOutputs []ReportResultOutput) (output ReportOutput) {
+	output = ReportOutput{
+		RunId:    runId,
+		TestRuns: make([]ReportOutputTestRun, 0),
+	}
+	for _, testRunResultOutput := range testRunResultOutputs {
+		if testRunResultOutput.TestCaseId == 0 {
+			continue
+		}
+		output.TestRuns = append(output.TestRuns, ReportOutputTestRun{
+			TestCaseId: testRunResultOutput.TestCaseId,
+			Status:     testRunResultOutput.Status,
+		})
+	}
+	return
+}
+
+func printOutput(output ReportOutput) {
+	jsonOutput, err := json.Marshal(output)
+	if err != nil {
+		log.Fatalf("Failed to marshal output: %v", err)
+	}
+	fmt.Println(string(jsonOutput))
 }
