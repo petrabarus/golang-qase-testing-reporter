@@ -22,6 +22,13 @@ builds:
       - linux
       - windows
       - darwin
+    goarch:
+      - amd64
+      - arm64
+      - arm
+      - 386
+    ldflags:
+      - '-w -s -X main.Version={{ .Version }} -extldflags "static"'
 
 archives:
   - format: tar.gz
@@ -37,6 +44,17 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
+
+checksum:
+  name_template: 'sha256sum.txt'
+
+release:
+  draft: true
+  prerelease: auto
+
+source:
+  enabled: true
+  format: zip
 
 changelog:
   sort: asc
