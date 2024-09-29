@@ -38,7 +38,6 @@ jobs:
             test-results.jsonl
       
       - name: Debug tag
-        if: github.event_name != 'pull_request' && github.ref == 'refs/tags/v*'
         run: |
           echo "Tag: ${{ github.ref_name }}"
           echo "Event name: ${{ github.event_name }}"
