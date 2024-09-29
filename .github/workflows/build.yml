@@ -36,15 +36,24 @@ jobs:
             --project ${{ secrets.QASE_PROJECT }} \
             --run-title "Pipeline run $(date +%Y%m%d%H%M%S)" \
             test-results.jsonl
+      
+      - name: Debug tag
+        if: github.event_name != 'pull_request' && github.ref == 'refs/tags/v*'
+        run: |
+          echo "Tag: ${{ github.ref_name }}"
+          echo "Event name: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          # print git tag
+          git tag
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
-        # We don't need to run GoReleaser on PRs
-        if: github.event_name != 'pull_request'
+        # Run on tag v*
+        if: github.event_name != 'pull_request' && github.ref == 'refs/tags/v*'
         with:
           distribution: goreleaser
           version: '~> v2'
-          args: release --clean --snapshot
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
