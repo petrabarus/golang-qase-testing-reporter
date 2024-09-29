@@ -28,7 +28,7 @@ builds:
       - arm
       - 386
     ldflags:
-      - '-w -s -X main.Version={{ .Version }} -extldflags "static"'
+      - '-w -s -X main.Version={{ .Version }} -X main.Commit={{ .Commit }} -X main.Date={{ .Date }} -extldflags "static"'
 
 archives:
   - format: tar.gz

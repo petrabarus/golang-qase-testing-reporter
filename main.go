@@ -24,9 +24,9 @@ import (
 )
 
 var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
+	Version = "dev"
+	Commit  = "none"
+	Date    = "unknown"
 )
 
 type Config struct {
@@ -187,7 +187,9 @@ func RunCommand(cmd *cobra.Command, args []string) {
 func printVersion(cmd *cobra.Command) (shouldExit bool) {
 	shouldPrintVersion, _ := cmd.Flags().GetBool("version")
 	if shouldPrintVersion {
-		fmt.Printf("go-qase-testing-reporter %s-%s-%s\n", version, commit, date)
+		shortCommit := Commit[:7]
+		shortDate := Date[:10]
+		fmt.Printf("go-qase-testing-reporter %s-%s-%s\n", Version, shortCommit, shortDate)
 		return true
 	}
 	return false
