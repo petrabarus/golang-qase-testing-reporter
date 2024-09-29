@@ -15,6 +15,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"runtime/debug"
 	"strconv"
 	"time"
 
@@ -26,7 +27,6 @@ import (
 var (
 	Version = "dev"
 	Commit  = "none"
-	Date    = "unknown"
 )
 
 type Config struct {
@@ -186,13 +186,16 @@ func RunCommand(cmd *cobra.Command, args []string) {
 
 func printVersion(cmd *cobra.Command) (shouldExit bool) {
 	shouldPrintVersion, _ := cmd.Flags().GetBool("version")
-	if shouldPrintVersion {
-		shortCommit := Commit[:7]
-		shortDate := Date[:10]
-		fmt.Printf("go-qase-testing-reporter %s-%s-%s\n", Version, shortCommit, shortDate)
-		return true
+	version := fmt.Sprintf("%s-%s", Version, Commit)
+	if !shouldPrintVersion {
+		return false
 	}
-	return false
+	buildInfo, ok := debug.ReadBuildInfo()
+	if ok {
+		version = fmt.Sprintf("%s-%s", buildInfo.Main.Version, buildInfo.Main.Sum)
+	}
+	fmt.Printf("go-qase-testing-reporter %s\n", version)
+	return true
 }
 
 func createNewRun(results []ReportResult) (runId int32, err error) {
