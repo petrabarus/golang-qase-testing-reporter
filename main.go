@@ -35,6 +35,7 @@ type Config struct {
 	QaseApiToken string `mapstructure:"api_token"`
 	QaseProject  string `mapstructure:"project"`
 	QaseRunTitle string `mapstructure:"run_title"`
+	Verbose      bool   `mapstructure:"verbose"`
 }
 
 type ReportJsonLine struct {
@@ -103,6 +104,7 @@ func init() {
 	cmd.Flags().StringP("project", "p", "", "Qase project name")
 	cmd.Flags().StringP("api-token", "t", "", "Qase API token")
 	cmd.Flags().StringP("run-title", "r", "", "Qase run title")
+	cmd.Flags().BoolP("verbose", "V", false, "Verbose mode")
 
 	// add --version flag
 	cmd.Flags().BoolP("version", "v", false, "Print version")
@@ -110,7 +112,7 @@ func init() {
 	viper.BindPFlag("project", cmd.Flags().Lookup("project"))
 	viper.BindPFlag("api_token", cmd.Flags().Lookup("api-token"))
 	viper.BindPFlag("run_title", cmd.Flags().Lookup("run-title"))
-
+	viper.BindPFlag("verbose", cmd.Flags().Lookup("verbose"))
 	// Adopts the official Qase environment variables
 	viper.BindEnv("project", "QASE_TESTOPS_PROJECT")
 	viper.BindEnv("api_token", "QASE_TESTOPS_API_TOKEN")
@@ -166,8 +168,11 @@ func RunCommand(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatalf("Failed to process file: %v", err)
 	}
+	// if empty results, we should exit with error
+	if len(results) == 0 {
+		log.Fatalf("No results found in file: %v", config.Filename)
+	}
 
-	//	log.Printf("Results: %+v", results)
 	id, err := createNewRun(results)
 	if err != nil {
 		log.Fatalf("Failed to create test run: %v", err)
@@ -230,11 +235,11 @@ func getVersionFromBuildInfo() (version string, ok bool) {
 }
 
 func createNewRun(results []ReportResult) (runId int32, err error) {
-	// Create Test Run
 	caseIds := make([]int64, 0)
 	for _, result := range results {
 		caseIds = append(caseIds, result.TestCaseId)
 	}
+	printVerbose("Creating new run with case IDs: %v\n", caseIds)
 
 	qaseResp, httpResp, err := qaseClient.RunsApi.CreateRun(ctx, qase.RunCreate{
 		Title: config.QaseRunTitle,
@@ -459,4 +464,10 @@ func printOutput(output ReportOutput) {
 		log.Fatalf("Failed to marshal output: %v", err)
 	}
 	fmt.Println(string(jsonOutput))
+}
+
+func printVerbose(format string, a ...any) {
+	if config.Verbose {
+		fmt.Printf(format, a...)
+	}
 }
