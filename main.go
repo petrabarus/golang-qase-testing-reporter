@@ -31,11 +31,12 @@ var (
 )
 
 type Config struct {
-	Filename     string
-	QaseApiToken string `mapstructure:"api_token"`
-	QaseProject  string `mapstructure:"project"`
-	QaseRunTitle string `mapstructure:"run_title"`
-	Verbose      bool   `mapstructure:"verbose"`
+	Filename          string
+	QaseApiToken      string `mapstructure:"api_token"`
+	QaseProject       string `mapstructure:"project"`
+	QaseRunTitle      string `mapstructure:"run_title"`
+	Verbose           bool   `mapstructure:"verbose"`
+	CombineMultipleId bool   `mapstructure:"combine_multiple_id"`
 }
 
 type ReportJsonLine struct {
@@ -105,6 +106,7 @@ func init() {
 	cmd.Flags().StringP("api-token", "t", "", "Qase API token")
 	cmd.Flags().StringP("run-title", "r", "", "Qase run title")
 	cmd.Flags().BoolP("verbose", "V", false, "Verbose mode")
+	cmd.Flags().Bool("combine-multiple-id", false, "Combine multiple Qase IDs in test name")
 
 	// add --version flag
 	cmd.Flags().BoolP("version", "v", false, "Print version")
@@ -113,6 +115,7 @@ func init() {
 	viper.BindPFlag("api_token", cmd.Flags().Lookup("api-token"))
 	viper.BindPFlag("run_title", cmd.Flags().Lookup("run-title"))
 	viper.BindPFlag("verbose", cmd.Flags().Lookup("verbose"))
+	viper.BindPFlag("combine_multiple_id", cmd.Flags().Lookup("combine-multiple-id"))
 	// Adopts the official Qase environment variables
 	viper.BindEnv("project", "QASE_TESTOPS_PROJECT")
 	viper.BindEnv("api_token", "QASE_TESTOPS_API_TOKEN")
@@ -344,17 +347,34 @@ func processFile(filename string) (results []ReportResult, err error) {
 
 	results = make([]ReportResult, 0)
 	for scanner.Scan() {
-		result, err := processLine(scanner.Text())
-		if err != nil {
-			//log.Printf("Failed to process line: %v", err)
-			continue
-		}
-		if result.TestCaseId == 0 {
-			continue
-		}
-		results = append(results, result)
-		if len(results) == 2000 {
-			return results, fmt.Errorf("max bulk request limit reached")
+		if config.CombineMultipleId {
+			resultList, err := processLineWithMultipleId(scanner.Text())
+			if err != nil {
+				//log.Printf("Failed to process line: %v", err)
+				continue
+			}
+			for _, result := range resultList {
+				if result.TestCaseId == 0 {
+					continue
+				}
+				results = append(results, result)
+				if len(results) == 2000 {
+					return results, fmt.Errorf("max bulk request limit reached")
+				}
+			}
+		} else {
+			result, err := processLine(scanner.Text())
+			if err != nil {
+				//log.Printf("Failed to process line: %v", err)
+				continue
+			}
+			if result.TestCaseId == 0 {
+				continue
+			}
+			results = append(results, result)
+			if len(results) == 2000 {
+				return results, fmt.Errorf("max bulk request limit reached")
+			}
 		}
 	}
 
@@ -435,6 +455,80 @@ func ParseQaseId(test string) (int, error) {
 		return 0, errors.New("failed to parse Qase ID")
 	}
 	return qaseId, nil
+}
+
+func processLineWithMultipleId(line string) (results []ReportResult, err error) {
+	var content ReportJsonLine
+	err = json.Unmarshal([]byte(line), &content)
+	if err != nil {
+		err = errors.Join(errors.New("failed to parse line"), err)
+		return
+	}
+	if content.Test == "" {
+		err = fmt.Errorf("no test name found in line: %v", line)
+		return
+	}
+
+	qaseIds, err := ParseQaseIds(content.Test)
+	if err != nil {
+		err = errors.Join(fmt.Errorf("failed to parse Qase ID in line: %v", line), err)
+		return
+	}
+	for _, qaseId := range qaseIds {
+		result := ReportResult{}
+		result.TestCaseId = int64(qaseId)
+
+		if content.Action == "fail" {
+			result.Status = TEST_CASE_RESULT_STATUS_FAILED
+			// test failed
+		} else if content.Action == "pass" {
+			result.Status = TEST_CASE_RESULT_STATUS_PASSED
+			// test passed
+		} else {
+			err = fmt.Errorf("unknown action: %v", content.Action)
+			return
+		}
+
+		if content.Time != "" {
+			result.Time, err = time.Parse(time.RFC3339, content.Time)
+			if err != nil {
+				err = errors.Join(fmt.Errorf("failed to parse time: %v", content.Time), err)
+				return
+			}
+			result.Time = result.Time.UTC()
+		}
+
+		if content.Elapsed != 0 {
+			// convert to ms
+			fmt.Printf("Elapsed: %v\n", content.Elapsed)
+			result.TimeMs = int64(content.Elapsed * 1000)
+			fmt.Printf("Elapsed: %v\n", result.TimeMs)
+		}
+
+		if content.Package != "" {
+			result.Package = content.Package
+		}
+		results = append(results, result)
+	}
+
+	return
+}
+
+func ParseQaseIds(test string) ([]int, error) {
+	re := regexp.MustCompile(`QASE-(\d+)`)
+	matches := re.FindAllStringSubmatch(test, -1)
+	if len(matches) == 0 {
+		return []int{}, nil
+	}
+	var qaseIds []int
+	for _, match := range matches {
+		qaseId, err := strconv.Atoi(match[1])
+		if err != nil {
+			return []int{}, errors.New("failed to parse Qase ID")
+		}
+		qaseIds = append(qaseIds, qaseId)
+	}
+	return qaseIds, nil
 }
 
 func createOutput(runId int32, testRunResultOutputs []ReportResultOutput) (output ReportOutput) {
